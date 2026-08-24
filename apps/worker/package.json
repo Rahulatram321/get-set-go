@@ -1,0 +1,28 @@
+{
+  "name": "@orbitqueue/worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "demo": "tsx src/demo.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@orbitqueue/config": "workspace:*",
+    "@orbitqueue/database": "workspace:*",
+    "@orbitqueue/logger": "workspace:*",
+    "@orbitqueue/metrics": "workspace:*",
+    "@orbitqueue/queue-core": "workspace:*",
+    "@orbitqueue/shared": "workspace:*",
+    "ioredis": "^5.4.2",
+    "nanoid": "^5.0.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

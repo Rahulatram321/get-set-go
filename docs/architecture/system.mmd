@@ -1,0 +1,38 @@
+flowchart TB
+    subgraph Client
+        WEB[Next.js Dashboard]
+    end
+
+    subgraph API Layer
+        API[Fastify API]
+        WS[WebSocket Server]
+    end
+
+    subgraph Processing
+        SCH[Scheduler Service]
+        W1[Worker 1]
+        W2[Worker 2]
+        WN[Worker N]
+    end
+
+    subgraph Storage
+        PG[(PostgreSQL)]
+        RD[(Redis)]
+    end
+
+    WEB -->|REST| API
+    WEB -->|WS| WS
+    API --> PG
+    API --> RD
+    WS --> API
+
+    SCH -->|Leader Lock| RD
+    SCH --> PG
+    W1 -->|SKIP LOCKED| PG
+    W2 -->|SKIP LOCKED| PG
+    WN -->|SKIP LOCKED| PG
+    W1 --> RD
+    W2 --> RD
+
+    PG -->|Metrics| API
+    API --> WEB

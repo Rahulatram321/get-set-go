@@ -1,0 +1,24 @@
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json pnpm-workspace.yaml ./
+COPY packages/ packages/
+COPY apps/worker/ apps/worker/
+RUN pnpm install || true
+
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/apps/worker ./apps/worker
+COPY package.json pnpm-workspace.yaml tsconfig.base.json ./
+RUN pnpm --filter @orbitqueue/database generate
+RUN pnpm --filter @orbitqueue/worker build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/apps/worker/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
+CMD ["node", "dist/main.js"]

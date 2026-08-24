@@ -1,0 +1,19 @@
+erDiagram
+    User ||--o{ OrganizationMember : has
+    Organization ||--o{ OrganizationMember : has
+    Organization ||--o{ Project : contains
+    Project ||--o{ Queue : has
+    Project ||--o{ Job : has
+    Queue ||--o{ Job : contains
+    Queue ||--o| RetryPolicy : configures
+    Queue ||--o| RateLimit : limits
+    Job ||--o{ JobExecution : has
+    Job ||--o{ JobLog : has
+    Job ||--o| DeadLetterJob : may_become
+    Worker ||--o{ Job : executes
+    Worker ||--o{ WorkerHeartbeat : sends
+    Worker ||--o{ JobExecution : performs
+    Queue ||--o{ ScheduledJob : schedules
+    Project ||--o{ Workflow : defines
+    Workflow ||--o{ WorkflowNode : contains
+    WorkflowNode ||--o{ WorkflowDependency : depends_on
